@@ -4,6 +4,8 @@ import 'package:ar_flutter_plugin/datatypes/node_types.dart';
 import 'package:ar_flutter_plugin/managers/ar_location_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_session_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_object_manager.dart';
+import 'package:ar_flutter_plugin/models/ar_node.dart';
+import 'package:ar_flutter_plugin/datatypes/config_planedetection.dart';
 import '../models/stand_model.dart';
 import '../services/ar_service.dart';
 import '../services/location_service.dart';
@@ -39,6 +41,7 @@ class _ARNavigationScreenState extends State<ARNavigationScreen> {
       return;
     }
 
+    // Check AR availability and permissions
     final arAvailable = await _arService.initializeAR(
       (error) => _showError(error),
       () => setState(() => _isInitialized = true),
@@ -49,7 +52,22 @@ class _ARNavigationScreenState extends State<ARNavigationScreen> {
       await ErrorDialog.show(
         context: context,
         title: 'AR Not Available',
-        message: 'Your device does not support AR features.',
+        message: 'Your device does not support AR features or permissions were denied.',
+        buttonText: 'OK',
+        onButtonPressed: () => Navigator.pop(context),
+      );
+      return;
+    }
+
+    // Check location permission
+    final locationPermission = await _locationService.requestPermission();
+    if (locationPermission == LocationPermission.denied ||
+        locationPermission == LocationPermission.deniedForever) {
+      if (!mounted) return;
+      await ErrorDialog.show(
+        context: context,
+        title: 'Location Permission Required',
+        message: 'Location permission is needed for AR navigation.',
         buttonText: 'OK',
         onButtonPressed: () => Navigator.pop(context),
       );
@@ -122,13 +140,17 @@ class _ARNavigationScreenState extends State<ARNavigationScreen> {
         children: [
           // AR View
           ARView(
-            onARViewCreated: (arSessionManager, arObjectManager, arLocationManager) {
+            onARViewCreated: (ARSessionManager sessionManager,
+                ARObjectManager objectManager,
+                ARAnchorManager anchorManager,
+                ARLocationManager locationManager) {
               _arService.onARViewCreated(
-                arSessionManager,
-                arObjectManager,
-                arLocationManager,
+                sessionManager,
+                objectManager,
+                locationManager,
               );
             },
+            planeDetectionConfig: PlaneDetectionConfig.horizontalAndVertical,
           ),
           // Navigation Overlay
           SafeArea(
@@ -181,7 +203,7 @@ class _ARNavigationScreenState extends State<ARNavigationScreen> {
               ],
             ),
           ),
-          // Help Text
+          // Loading Overlay
           if (!_isInitialized)
             Container(
               color: Colors.black.withOpacity(0.8),
