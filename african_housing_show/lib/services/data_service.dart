@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' show sin, cos, sqrt, atan2, pi;
 import '../models/stand_model.dart';
 
 class DataService {
@@ -87,19 +88,17 @@ class DataService {
     final double dLon = _toRadians(lon2 - lon1);
     
     final double a = (
-      _sin(dLat / 2) * _sin(dLat / 2) +
-      _cos(_toRadians(lat1)) * _cos(_toRadians(lat2)) *
-      _sin(dLon / 2) * _sin(dLon / 2)
+      sin(dLat / 2) * sin(dLat / 2) +
+      cos(_toRadians(lat1)) * cos(_toRadians(lat2)) *
+      sin(dLon / 2) * sin(dLon / 2)
     );
     
-    final double c = 2 * _atan2(_sqrt(a), _sqrt(1 - a));
+    final double c = 2 * atan2(sqrt(a), sqrt(1 - a));
     return earthRadius * c;
   }
 
-  // Helper functions for distance calculation
-  double _toRadians(double degree) => degree * (3.141592653589793 / 180);
-  double _sin(double x) => x.sin();
-  double _cos(double x) => x.cos();
-  double _atan2(double y, double x) => y.atan2(x);
-  double _sqrt(double x) => x.sqrt();
+  // Helper function to convert degrees to radians
+  double _toRadians(double degree) {
+    return degree * (pi / 180);
+  }
 }
