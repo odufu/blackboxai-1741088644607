@@ -1,0 +1,25 @@
+name: african_housing_show
+description: AR-based Exhibition Navigation app for African Housing Show
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.19.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  ar_flutter_plugin: ^0.7.3
+  provider: ^6.0.5
+  geolocator: ^9.0.2
+  google_fonts: ^5.1.0
+  cupertino_icons: ^1.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.2
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
