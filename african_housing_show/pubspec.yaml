@@ -9,9 +9,12 @@ dependencies:
   flutter:
     sdk: flutter
   ar_flutter_plugin: ^0.7.3
+  arcore_flutter_plugin: ^0.1.0  # Added for better AR support
   provider: ^6.0.5
   geolocator: ^9.0.2
   google_fonts: ^5.1.0
+  vector_math: ^2.1.4
+  permission_handler: ^10.4.3  # Added for handling permissions
   cupertino_icons: ^1.0.5
 
 dev_dependencies:
@@ -21,5 +24,25 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  
   assets:
+    - assets/models/
     - assets/images/
+
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto-Bold.ttf
+          weight: 700
+
+# Additional configuration for AR plugins
+android:
+  minSdkVersion: 24
+  targetSdkVersion: 33
+  compileSdkVersion: 33
+
+ios:
+  minVersion: "11.0"
